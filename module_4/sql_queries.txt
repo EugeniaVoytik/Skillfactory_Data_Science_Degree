@@ -1,0 +1,70 @@
+# Task 4.1
+
+SELECT a.city
+FROM dst_project.airports a
+GROUP BY a.city
+HAVING count(a.airport_name) > 1
+
+
+# Task 4.2
+
+## Question 1
+SELECT count(DISTINCT f.status)
+FROM dst_project.flights f
+
+## Question 2
+SELECT count(*)
+FROM dst_project.flights f
+WHERE f.status = 'Departed'
+
+## Question 3
+SELECT count(s.seat_no)
+FROM dst_project.seats s WHERE s.aircraft_code = '773'
+
+## Question 4
+SELECT count(*)
+FROM dst_project.flights f WHERE (f.actual_arrival BETWEEN '2017-04-01' AND '2017-09-01')
+AND (f.status = 'Arrived')
+
+
+# Task 4.3
+
+## Question 1
+SELECT count(*)
+FROM dst_project.flights f WHERE f.status = 'Cancelled'
+
+## Question 2
+### Boeing
+SELECT count(*)
+FROM dst_project.aircrafts a WHERE a.model like '%Boeing%'
+
+### Sukhoi Superjet
+SELECT count(*)
+FROM dst_project.aircrafts a WHERE a.model like '%Sukhoi Superjet%'
+
+### Airbus
+SELECT count(*)
+FROM dst_project.aircrafts a WHERE a.model like '%Airbus%'
+
+## Question 3
+SELECT air.country,
+       count(*)
+FROM
+  (SELECT (CASE
+               WHEN a.timezone like '%Europe%' THEN 'Europe'
+               WHEN a.timezone like '%Asia%' THEN 'Asia'
+               WHEN a.timezone like '%Australia%' THEN 'Australia'
+           END) country
+   FROM dst_project.airports a) air
+GROUP BY air.country
+
+## Question 4
+SELECT f.flight_id,
+       f.actual_arrival - f.scheduled_arrival delay
+FROM dst_project.flights f
+WHERE actual_arrival IS NOT NULL
+ORDER BY delay DESC
+LIMIT 1
+
+
+# Task 4.4
