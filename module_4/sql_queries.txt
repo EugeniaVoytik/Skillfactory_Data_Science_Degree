@@ -68,3 +68,48 @@ LIMIT 1
 
 
 # Task 4.4
+
+## Question 1
+SELECT f.scheduled_departure
+FROM dst_project.flights f
+ORDER BY f.scheduled_departure
+LIMIT 1
+
+## Question 2
+SELECT date_part('minute', f.scheduled_arrival - f.scheduled_departure) + date_part('hour', f.scheduled_arrival - f.scheduled_departure)*60 flight_duration
+FROM dst_project.flights f
+ORDER BY flight_duration DESC
+LIMIT 1
+
+## Question 3
+SELECT f.departure_airport,
+       f.arrival_airport
+FROM dst_project.flights f
+ORDER BY f.scheduled_arrival - f.scheduled_departure DESC
+LIMIT 1
+
+## Question 4
+SELECT floor(avg(date_part('minute', f.scheduled_arrival - f.scheduled_departure) + date_part('hour', f.scheduled_arrival - f.scheduled_departure)*60))
+FROM dst_project.flights f
+
+
+# Task 4.5
+
+## Question 1
+SELECT s.fare_conditions,
+       count(*) seats_count
+FROM dst_project.seats s
+WHERE s.aircraft_code = 'SU9'
+GROUP BY s.fare_conditions
+ORDER BY seats_count DESC
+LIMIT 1
+
+## Question 2
+SELECT min(b.total_amount)
+FROM dst_project.bookings b
+
+## Question 3
+SELECT b.seat_no
+FROM dst_project.tickets t
+JOIN dst_project.boarding_passes b ON t.ticket_no = b.ticket_no
+WHERE t.passenger_id = '4313 788533'
