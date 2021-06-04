@@ -113,3 +113,62 @@ SELECT b.seat_no
 FROM dst_project.tickets t
 JOIN dst_project.boarding_passes b ON t.ticket_no = b.ticket_no
 WHERE t.passenger_id = '4313 788533'
+
+
+# Task 5.1
+
+## Question 1
+SELECT count(*)
+FROM dst_project.flights f
+WHERE f.arrival_airport =
+    (SELECT a.airport_code
+     FROM dst_project.airports a
+     WHERE a.city = 'Anapa' )
+  AND date_part('year', f.actual_arrival) = 2017
+
+## Question 2
+SELECT count(*)
+FROM dst_project.flights f
+WHERE f.departure_airport =
+    (SELECT a.airport_code
+     FROM dst_project.airports a
+     WHERE a.city = 'Anapa' )
+  AND date_part('year', f.actual_arrival) = 2017
+  AND date_part('month', f.actual_departure) in (1,
+                                                 2,
+                                                 12)
+
+## Question 3
+SELECT count(*)
+FROM dst_project.flights f
+WHERE f.departure_airport =
+    (SELECT a.airport_code
+     FROM dst_project.airports a
+     WHERE a.city = 'Anapa' )
+  AND f.status = 'Cancelled'
+
+## Question 4
+SELECT count(*)
+FROM dst_project.flights f
+WHERE f.departure_airport =
+    (SELECT a.airport_code
+     FROM dst_project.airports a
+     WHERE a.city = 'Anapa' )
+  AND f.arrival_airport not in
+    (SELECT a.airport_code
+     FROM dst_project.airports a
+     WHERE a.city = 'Moscow' )
+
+## Question 5
+SELECT a.model,
+       count(DISTINCT s.seat_no) seats_count
+FROM dst_project.flights f
+JOIN dst_project.seats s ON f.aircraft_code = s.aircraft_code
+JOIN dst_project.aircrafts a ON f.aircraft_code = a.aircraft_code
+WHERE f.departure_airport =
+    (SELECT a.airport_code
+     FROM dst_project.airports a
+     WHERE a.city = 'Anapa')
+GROUP BY a.model
+ORDER BY seats_count DESC
+LIMIT 1
