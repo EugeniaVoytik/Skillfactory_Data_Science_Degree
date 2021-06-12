@@ -172,3 +172,23 @@ WHERE f.departure_airport =
 GROUP BY a.model
 ORDER BY seats_count DESC
 LIMIT 1
+
+## Data analysis for flights from Anapa in winter 2017
+SELECT *
+FROM dst_project.flights f
+LEFT JOIN dst_project.airports airport ON f.arrival_airport = airport.airport_code
+LEFT JOIN dst_project.airports airport2 ON f.departure_airport = airport2.airport_code
+LEFT JOIN dst_project.aircrafts a ON f.aircraft_code = a.aircraft_code
+LEFT JOIN dst_project.ticket_flights t ON f.flight_id = t.flight_id
+LEFT JOIN
+  (SELECT s.aircraft_code,
+          count(*) seats_count
+   FROM dst_project.seats s
+   GROUP BY s.aircraft_code
+   ORDER BY s.aircraft_code) air ON f.aircraft_code = air.aircraft_code
+WHERE f.departure_airport = 'AAQ'
+  AND (date_trunc('month', f.scheduled_departure) in ('2017-01-01',
+                                                      '2017-02-01',
+                                                      '2017-12-01'))
+  AND f.status not in ('Cancelled')
+ORDER BY f.flight_id
